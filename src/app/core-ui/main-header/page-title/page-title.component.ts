@@ -367,6 +367,12 @@ export class PageTitleComponent {
   // Routes that get their own title and have no work-context menu.
   // Order is irrelevant — patterns are mutually exclusive end-anchors.
   private static readonly _ROUTE_TITLE_KEYS: ReadonlyArray<readonly [RegExp, string]> = [
+    [/^\/today$/, T.MASTER_PLANNER.TODAY],
+    [/^\/tomorrow$/, T.MASTER_PLANNER.TOMORROW],
+    [/^\/day\/[^/]+$/, T.MASTER_PLANNER.DAY],
+    [/^\/week(?:\/[^/]+)?$/, T.MASTER_PLANNER.WEEK],
+    [/^\/month(?:\/[^/]+\/[^/]+)?$/, T.MASTER_PLANNER.MONTH],
+    [/^\/year(?:\/[^/]+)?$/, T.MASTER_PLANNER.YEAR],
     [/schedule$/, T.MH.SCHEDULE],
     [/planner$/, T.MH.PLANNER],
     [/boards$/, T.MH.BOARDS],

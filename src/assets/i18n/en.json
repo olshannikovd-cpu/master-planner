@@ -1,4 +1,21 @@
 {
+  "MASTER_PLANNER": {
+    "TODAY": "Today",
+    "TOMORROW": "Tomorrow",
+    "DAY": "Day",
+    "WEEK": "Week",
+    "MONTH": "Month",
+    "YEAR": "Year",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "CURRENT_MONTH": "Current month",
+    "CURRENT_YEAR": "Current year",
+    "NO_TASKS": "No tasks",
+    "TASK_COUNT": "Tasks: {{count}}",
+    "EVENT_COUNT": "Events: {{count}}",
+    "DAY_SUMMARY": "{{date}}: {{count}} tasks",
+    "CALENDAR_NAVIGATION": "Calendar navigation"
+  },
   "APP": {
     "B_INSTALL": {
       "IGNORE": "Ignore",

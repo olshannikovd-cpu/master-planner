@@ -1,0 +1,16 @@
+<div
+  class="days"
+  [class.week]="isWeek()"
+  cdkDropListGroup
+  cdkScrollable
+>
+  @for (day of days(); track day.dayDate) {
+    <planner-day [day]="day" />
+  }
+  @if (includesToday() && (overdue().length || overdueDeadlines().length)) {
+    <planner-day-overdue
+      [overdueTasks]="overdue()"
+      [overdueDeadlineTasks]="overdueDeadlines()"
+    />
+  }
+</div>

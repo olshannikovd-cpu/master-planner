@@ -169,6 +169,13 @@ export class PlannerService {
     );
   }
 
+  /** Live range for calendar views, without extending the Planner's scroll window. */
+  selectDays$(dayDates$: Observable<string[]>): Observable<PlannerDay[]> {
+    return this._selectPlannerDaysFor$(dayDates$).pipe(
+      shareReplay({ bufferSize: 1, refCount: true }),
+    );
+  }
+
   getSnackExtraStr(dayStr: string): Promise<string> {
     return this.getDayOnce$(dayStr)
       .pipe(

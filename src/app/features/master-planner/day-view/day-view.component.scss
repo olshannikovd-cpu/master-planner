@@ -1,0 +1,40 @@
+@use '../../../../styles/_globals.scss' as *;
+
+:host {
+  display: block;
+}
+
+.days {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--s2);
+
+  &.week {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+}
+
+planner-day,
+planner-day-overdue {
+  flex: 0 0 260px;
+}
+
+.days:not(.week) planner-day {
+  flex: 1 1 260px;
+  max-width: var(--component-max-width);
+}
+
+@include mq(xs, max) {
+  .days.week {
+    flex-direction: column;
+  }
+
+  planner-day,
+  planner-day-overdue {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+  }
+}

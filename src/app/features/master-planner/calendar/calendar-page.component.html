@@ -1,0 +1,83 @@
+<header class="calendar-header">
+  <div>
+    <h1>{{ calendar.title() | translate }}</h1>
+    <div class="period">
+      @switch (calendar.mode) {
+        @case ('year') {
+          {{ calendar.date() | localeDate: 'yyyy' }}
+        }
+        @case ('month') {
+          {{
+            calendar.date() | localeDate: 'MMMM yyyy' : undefined : format.textLocale()
+          }}
+        }
+        @case ('week') {
+          {{ calendar.days()[0]?.dayDate | localeDate: 'mediumDate' }} –
+          {{ calendar.weekEnd() | localeDate: 'mediumDate' }}
+        }
+        @default {
+          {{ calendar.date() | localeDate: 'fullDate' }}
+        }
+      }
+    </div>
+  </div>
+  <nav
+    class="period-navigation"
+    [attr.aria-label]="T.MASTER_PLANNER.CALENDAR_NAVIGATION | translate"
+  >
+    <a
+      mat-icon-button
+      [routerLink]="calendar.previous()"
+      [attr.aria-label]="T.MASTER_PLANNER.PREVIOUS | translate"
+      ><mat-icon>chevron_left</mat-icon></a
+    >
+    <a
+      mat-button
+      [routerLink]="calendar.current()"
+      >{{ calendar.currentLabel() | translate }}</a
+    >
+    <a
+      mat-icon-button
+      [routerLink]="calendar.next()"
+      [attr.aria-label]="T.MASTER_PLANNER.NEXT | translate"
+      ><mat-icon>chevron_right</mat-icon></a
+    >
+  </nav>
+</header>
+
+@switch (calendar.mode) {
+  @case ('month') {
+    <div class="month-scroll">
+      <mp-month-grid
+        [cells]="calendar.months()[0].cells"
+        [weekdays]="calendar.weekdayLabels()"
+      />
+    </div>
+  }
+  @case ('year') {
+    <div class="year-grid">
+      @for (month of calendar.months(); track month.link.join('/')) {
+        <section class="mini-month">
+          <h2>
+            <a
+              mat-button
+              [routerLink]="month.link"
+              >{{ month.date | localeDate: 'MMMM' : undefined : format.textLocale() }}</a
+            >
+          </h2>
+          <mp-month-grid
+            [cells]="month.cells"
+            [weekdays]="calendar.weekdayLabels()"
+            [compact]="true"
+          />
+        </section>
+      }
+    </div>
+  }
+  @default {
+    <mp-day-view
+      [days]="calendar.days()"
+      [isWeek]="calendar.mode === 'week'"
+    />
+  }
+}

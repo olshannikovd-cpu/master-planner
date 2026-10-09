@@ -401,7 +401,43 @@ export class MagicNavConfigService {
   }
 
   private _buildMainRoutesItems(): NavItem[] {
-    const items: NavItem[] = [];
+    const items: NavItem[] = [
+      {
+        type: 'route',
+        id: 'mp-today',
+        label: T.MASTER_PLANNER.TODAY,
+        icon: 'today',
+        route: '/today',
+      },
+      {
+        type: 'route',
+        id: 'mp-tomorrow',
+        label: T.MASTER_PLANNER.TOMORROW,
+        icon: 'event_upcoming',
+        route: '/tomorrow',
+      },
+      {
+        type: 'route',
+        id: 'mp-week',
+        label: T.MASTER_PLANNER.WEEK,
+        icon: 'view_week',
+        route: '/week',
+      },
+      {
+        type: 'route',
+        id: 'mp-month',
+        label: T.MASTER_PLANNER.MONTH,
+        icon: 'calendar_month',
+        route: '/month',
+      },
+      {
+        type: 'route',
+        id: 'mp-year',
+        label: T.MASTER_PLANNER.YEAR,
+        icon: 'calendar_view_month',
+        route: '/year',
+      },
+    ];
 
     if (this.isPlannerEnabled()) {
       items.push({

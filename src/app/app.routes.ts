@@ -12,6 +12,25 @@ import {
 import { TagTaskPageComponent } from './pages/tag-task-page/tag-task-page.component';
 
 export const APP_ROUTES: Routes = [
+  ...[
+    { path: 'today', calendarMode: 'today' },
+    { path: 'tomorrow', calendarMode: 'tomorrow' },
+    { path: 'day/:date', calendarMode: 'day' },
+    { path: 'week', calendarMode: 'week' },
+    { path: 'week/:date', calendarMode: 'week' },
+    { path: 'month', calendarMode: 'month' },
+    { path: 'month/:year/:month', calendarMode: 'month' },
+    { path: 'year', calendarMode: 'year' },
+    { path: 'year/:year', calendarMode: 'year' },
+  ].map(({ path, calendarMode }) => ({
+    path,
+    loadComponent: () =>
+      import('./features/master-planner/calendar/calendar-page.component').then(
+        (m) => m.CalendarPageComponent,
+      ),
+    data: { page: 'master-planner', calendarMode },
+    canActivate: [FocusOverlayOpenGuard],
+  })),
   // Eagerly loaded — this is the main view
   {
     path: 'tag/:id/tasks',

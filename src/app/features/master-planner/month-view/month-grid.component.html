@@ -1,0 +1,45 @@
+<div
+  class="grid"
+  [class.compact]="compact()"
+>
+  @for (weekday of weekdays(); track $index) {
+    <div class="weekday">{{ weekday }}</div>
+  }
+  @for (cell of cells(); track cell.dateStr) {
+    <a
+      class="day focus-ring"
+      [class.outside]="!cell.inMonth"
+      [class.today]="cell.isToday"
+      [routerLink]="['/day', cell.dateStr]"
+      [attr.aria-current]="cell.isToday ? 'date' : null"
+      [attr.aria-label]="
+        T.MASTER_PLANNER.DAY_SUMMARY
+          | translate: { date: cell.dateStr, count: cell.taskCount }
+      "
+    >
+      <span class="day-number">{{ cell.dayNumber }}</span>
+      @if (compact()) {
+        @if (cell.taskCount || cell.eventCount) {
+          <span
+            class="indicator"
+            aria-hidden="true"
+          ></span>
+        }
+      } @else {
+        <span class="count">{{
+          cell.taskCount
+            ? (T.MASTER_PLANNER.TASK_COUNT | translate: { count: cell.taskCount })
+            : (T.MASTER_PLANNER.NO_TASKS | translate)
+        }}</span>
+        @for (title of cell.titles; track $index) {
+          <span class="task-title">{{ title }}</span>
+        }
+        @if (cell.eventCount) {
+          <span class="count">{{
+            T.MASTER_PLANNER.EVENT_COUNT | translate: { count: cell.eventCount }
+          }}</span>
+        }
+      }
+    </a>
+  }
+</div>
