@@ -20,6 +20,7 @@ import { selectPlannerState } from './store/planner.selectors';
 import { selectTimelineConfig } from '../config/store/global-config.reducer';
 import { selectStartOfNextDayDiffMs } from '../../root-store/app-state/app-state.selectors';
 import { findSpringForwardSunday } from '../tasks/dst.test-helper';
+import { DEFAULT_TASK, Task } from '../tasks/task.model';
 
 describe('PlannerService', () => {
   let service: PlannerService;
@@ -128,6 +129,41 @@ describe('PlannerService', () => {
   afterEach(() => {
     jasmine.clock().uninstall();
     TestBed.inject(MockStore).resetSelectors();
+  });
+
+  describe('selectDays$', () => {
+    it('keeps arbitrary dates live when existing tasks change', () => {
+      const store = TestBed.inject(MockStore);
+      const date = '2026-06-10';
+      const task: Task = {
+        ...DEFAULT_TASK,
+        id: 'calendar-task',
+        projectId: 'project',
+        title: 'Original',
+        dueDay: date,
+      };
+      const taskMap = store.overrideSelector(
+        selectMapOfAllTasksInActiveProjects,
+        new Map([[task.id, task]]),
+      );
+      store.overrideSelector(selectPlannerState, {
+        days: { [date]: [task.id] },
+        addPlannedTasksDialogLastShown: undefined,
+      });
+      let latest: PlannerDay[] = [];
+      const dates = new BehaviorSubject([date]);
+      const subscription = service.selectDays$(dates).subscribe((days) => {
+        latest = days;
+      });
+      expect(latest[0].tasks[0].title).toBe('Original');
+      taskMap.setResult(new Map([[task.id, { ...task, title: 'Updated' }]]));
+      store.refreshState();
+      expect(latest[0].tasks[0].title).toBe('Updated');
+      dates.next(['2026-06-11']);
+      expect(latest[0].dayDate).toBe('2026-06-11');
+      expect(latest[0].tasks.length).toBe(0);
+      subscription.unsubscribe();
+    });
   });
 
   describe('tomorrow$', () => {
