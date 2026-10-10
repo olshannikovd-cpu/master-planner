@@ -1,4 +1,5 @@
 import { isValidDBDateStr } from '../../util/get-db-date-str';
+import { isWorkOrderTimeRange } from './work-order-time.util';
 import { isCrmRecordId, WORK_ORDER_STATUSES } from './master-planner-data.const';
 import {
   MasterPlannerRecord,
@@ -52,9 +53,8 @@ export const isMasterPlannerRecord = (value: unknown): value is MasterPlannerRec
         optional(value['description'], isString) &&
         WORK_ORDER_STATUSES.some((status) => status === value['status']) &&
         optional(value['scheduledDay'], isDay) &&
-        optional(value['scheduledStart'], isNumber) &&
-        optional(value['scheduledEnd'], isNumber) &&
-        optional(value['workPrice'], isNumber) &&
+        isWorkOrderTimeRange(value['scheduledStart'], value['scheduledEnd']) &&
+        optional(value['workPrice'], (price) => isNumber(price) && price >= 0) &&
         Array.isArray(value['taskIds']) &&
         value['taskIds'].every(isString) &&
         optional(value['completedAt'], isNumber) &&

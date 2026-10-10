@@ -1,0 +1,55 @@
+<div class="page-wrapper">
+  <div class="component-wrapper">
+    <header>
+      <h1>{{ T.MASTER_PLANNER_CRM.WORK_ORDERS | translate }}</h1>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="addWorkOrder()"
+      >
+        {{ T.MASTER_PLANNER_CRM.ADD_WORK_ORDER | translate }}
+      </button>
+    </header>
+    <div class="toolbar">
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.SEARCH_WORK_ORDERS | translate }}</mat-label
+        ><input
+          matInput
+          type="search"
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)"
+      /></mat-form-field>
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.STATUS | translate }}</mat-label
+        ><mat-select
+          [ngModel]="status()"
+          (ngModelChange)="status.set($event)"
+          ><mat-option value="">{{
+            T.MASTER_PLANNER_CRM.ALL_STATUSES | translate
+          }}</mat-option>
+          @for (item of statuses; track item) {
+            <mat-option [value]="item">{{ statusLabels[item] | translate }}</mat-option>
+          }
+        </mat-select></mat-form-field
+      >
+      <mat-checkbox
+        [checked]="showArchived()"
+        (change)="showArchived.set($event.checked)"
+        >{{ T.MASTER_PLANNER_CRM.SHOW_ARCHIVED | translate }}</mat-checkbox
+      >
+    </div>
+    <mp-work-order-rows [orders]="orders()" />
+    @if (!orders().length) {
+      <p>
+        {{
+          (search().trim() || status()
+            ? T.MASTER_PLANNER_CRM.NO_MATCHES
+            : showArchived()
+              ? T.MASTER_PLANNER_CRM.NO_ARCHIVED_WORK_ORDERS
+              : T.MASTER_PLANNER_CRM.NO_WORK_ORDERS
+          ) | translate
+        }}
+      </p>
+    }
+  </div>
+</div>

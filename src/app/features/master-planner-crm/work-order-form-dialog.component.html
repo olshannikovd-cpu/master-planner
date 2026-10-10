@@ -1,0 +1,176 @@
+<h1 mat-dialog-title>
+  {{
+    (input.order
+      ? T.MASTER_PLANNER_CRM.EDIT_WORK_ORDER
+      : T.MASTER_PLANNER_CRM.ADD_WORK_ORDER
+    ) | translate
+  }}
+</h1>
+<form
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+>
+  <mat-dialog-content
+    ><div class="fields">
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.CUSTOMER | translate }}</mat-label
+        ><mat-select
+          formControlName="customerId"
+          required
+        >
+          @for (customer of customers(); track customer.id) {
+            <mat-option [value]="customer.id">{{ customer.name }}</mat-option>
+          }
+          @if (archivedOwner(); as customer) {
+            <mat-option
+              [value]="customer.id"
+              [disabled]="true"
+              >{{ customer.name }} ({{
+                T.MASTER_PLANNER_CRM.ARCHIVED | translate
+              }})</mat-option
+            >
+          }</mat-select
+        ><mat-error>{{
+          T.MASTER_PLANNER_CRM.SELECT_CUSTOMER | translate
+        }}</mat-error></mat-form-field
+      >
+      @if (!customers().length && !archivedOwner()) {
+        <p>{{ T.MASTER_PLANNER_CRM.NO_ACTIVE_CUSTOMERS | translate }}</p>
+      }
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.SITE | translate }}</mat-label
+        ><mat-select formControlName="workSiteId">
+          <mat-option value="">{{ T.MASTER_PLANNER_CRM.NO_SITE | translate }}</mat-option>
+          @for (site of sites(); track site.id) {
+            <mat-option [value]="site.id">{{ site.name }}</mat-option>
+          }
+          @if (archivedSite(); as site) {
+            <mat-option
+              [value]="site.id"
+              [disabled]="true"
+              >{{ site.name }} ({{
+                T.MASTER_PLANNER_CRM.ARCHIVED | translate
+              }})</mat-option
+            >
+          }</mat-select
+        ><mat-error>{{
+          T.MASTER_PLANNER_CRM.SELECT_SITE | translate
+        }}</mat-error></mat-form-field
+      >
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.WORK_TITLE | translate }}</mat-label
+        ><input
+          matInput
+          formControlName="title"
+          required
+        /><mat-error>{{
+          T.MASTER_PLANNER_CRM.REQUIRED | translate
+        }}</mat-error></mat-form-field
+      >
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.DESCRIPTION | translate }}</mat-label
+        ><textarea
+          matInput
+          formControlName="description"
+          rows="2"
+        ></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.STATUS | translate }}</mat-label
+        ><mat-select formControlName="status">
+          @for (status of statuses; track status) {
+            <mat-option [value]="status">{{
+              statusLabels[status] | translate
+            }}</mat-option>
+          }
+        </mat-select></mat-form-field
+      >
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.DATE | translate }}</mat-label
+        ><input
+          matInput
+          type="date"
+          formControlName="scheduledDay"
+        /><mat-error>{{
+          T.MASTER_PLANNER_CRM.INVALID_DATE | translate
+        }}</mat-error></mat-form-field
+      >
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.START_TIME | translate }}</mat-label
+        ><input
+          matInput
+          formControlName="startTime"
+          [placeholder]="T.MASTER_PLANNER_CRM.TIME_FORMAT | translate"
+        /><mat-error>{{
+          T.MASTER_PLANNER_CRM.INVALID_TIME | translate
+        }}</mat-error></mat-form-field
+      >
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.END_TIME | translate }}</mat-label
+        ><input
+          matInput
+          formControlName="endTime"
+          [placeholder]="T.MASTER_PLANNER_CRM.TIME_FORMAT | translate"
+        /><mat-hint>{{ T.MASTER_PLANNER_CRM.END_TIME_HINT | translate }}</mat-hint
+        ><mat-error>{{
+          T.MASTER_PLANNER_CRM.INVALID_TIME | translate
+        }}</mat-error></mat-form-field
+      >
+      @if (form.hasError('timeRange') && form.touched) {
+        <p
+          role="alert"
+          class="save-error"
+        >
+          {{ T.MASTER_PLANNER_CRM.INVALID_TIME_RANGE | translate }}
+        </p>
+      }
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.WORK_PRICE | translate }}</mat-label
+        ><input
+          matInput
+          type="number"
+          min="0"
+          step="any"
+          formControlName="workPrice"
+        /><mat-error>{{
+          T.MASTER_PLANNER_CRM.INVALID_PRICE | translate
+        }}</mat-error></mat-form-field
+      >
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.NOTES | translate }}</mat-label
+        ><textarea
+          matInput
+          formControlName="notes"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+    </div>
+    @if (failed()) {
+      <p
+        role="alert"
+        class="save-error"
+      >
+        {{ T.MASTER_PLANNER_CRM.SAVE_ERROR | translate }}
+      </p>
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions align="end"
+    ><div class="wrap-buttons">
+      <button
+        mat-button
+        type="button"
+        (click)="cancel()"
+        [disabled]="saving()"
+      >
+        {{ T.G.CANCEL | translate }}</button
+      ><button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="saving()"
+      >
+        {{ (saving() ? T.MASTER_PLANNER_CRM.SAVING : T.G.SAVE) | translate }}
+      </button>
+    </div></mat-dialog-actions
+  >
+</form>

@@ -18,12 +18,14 @@ import { DialogConfirmComponent } from '../../ui/dialog-confirm/dialog-confirm.c
 import { MasterPlannerDataService } from '../master-planner-data/master-planner-data.service';
 import { CustomerFormDialogComponent } from './customer-form-dialog.component';
 import { SiteFormDialogComponent } from './site-form-dialog.component';
+import { WorkOrderFormDialogComponent } from './work-order-form-dialog.component';
+import { WorkOrderRowsComponent } from './work-order-rows.component';
 import { CRM_DIALOG_SIZE, waitForCommittedRecord } from './crm-ui.util';
 
 @Component({
   selector: 'mp-customer-detail',
   standalone: true,
-  imports: [RouterLink, MatButton, MatCheckbox, TranslatePipe],
+  imports: [RouterLink, MatButton, MatCheckbox, TranslatePipe, WorkOrderRowsComponent],
   templateUrl: './customer-detail.component.html',
   styleUrl: './crm-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,6 +45,12 @@ export class CustomerDetailComponent {
     this._data.getWorkSitesForCustomer(this._id()),
   );
   readonly customer = computed(() => this._record()());
+  private readonly _relatedOrders = computed(() =>
+    this._data.getWorkOrdersForCustomer(this._id()),
+  );
+  readonly orders = computed(() =>
+    this._relatedOrders()().filter((order) => order.archivedAt === undefined),
+  );
   readonly T = T;
   readonly showArchivedSites = signal(false);
   readonly sites = computed(() =>
@@ -108,5 +116,19 @@ export class CustomerDetailComponent {
     } finally {
       this.busy.set(false);
     }
+  }
+
+  async addWorkOrder(): Promise<void> {
+    const customer = this.customer();
+    if (!customer || customer.archivedAt !== undefined) return;
+    const id = await firstValueFrom(
+      this._dialog
+        .open(WorkOrderFormDialogComponent, {
+          ...CRM_DIALOG_SIZE,
+          data: { customerId: customer.id },
+        })
+        .afterClosed(),
+    );
+    if (id) await this._router.navigate(['/work-orders', id]);
   }
 }

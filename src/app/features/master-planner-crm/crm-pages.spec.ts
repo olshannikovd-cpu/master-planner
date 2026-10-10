@@ -10,6 +10,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
+import { DateTimeFormatService } from '../../core/date-time-format/date-time-format.service';
 import { MasterPlannerDataService } from '../master-planner-data/master-planner-data.service';
 import { Customer, WorkSite } from '../master-planner-data/master-planner-data.model';
 import {
@@ -49,6 +50,8 @@ describe('Master Planner CRM pages', () => {
     getWorkSitesForCustomer: jasmine.Spy;
     archiveCustomer: jasmine.Spy;
     archiveWorkSite: jasmine.Spy;
+    getWorkOrdersForCustomer: jasmine.Spy;
+    getWorkOrdersForSite: jasmine.Spy;
   };
   let navigate: jasmine.Spy;
 
@@ -63,6 +66,8 @@ describe('Master Planner CRM pages', () => {
       open: jasmine.createSpy('open').and.returnValue({ afterClosed: () => of(true) }),
     };
     data = {
+      getWorkOrdersForCustomer: jasmine.createSpy().and.returnValue(signal([])),
+      getWorkOrdersForSite: jasmine.createSpy().and.returnValue(signal([])),
       getCustomers: () => customers,
       getWorkSites: () => sites,
       getCustomer: (id) => computed(() => customers().find((record) => record.id === id)),
@@ -98,6 +103,7 @@ describe('Master Planner CRM pages', () => {
         provideNoopAnimations(),
         { provide: MasterPlannerDataService, useValue: data },
         { provide: MatDialog, useValue: dialog },
+        { provide: DateTimeFormatService, useValue: { currentLocale: signal('en-GB') } },
       ],
     });
   });

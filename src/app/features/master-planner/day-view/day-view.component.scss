@@ -16,12 +16,12 @@
   }
 }
 
-planner-day,
+.day-column,
 planner-day-overdue {
   flex: 0 0 260px;
 }
 
-.days:not(.week) planner-day {
+.days:not(.week) .day-column {
   flex: 1 1 260px;
   max-width: var(--component-max-width);
 }
@@ -31,10 +31,17 @@ planner-day-overdue {
     flex-direction: column;
   }
 
-  planner-day,
+  .day-column,
   planner-day-overdue {
     flex: none;
     width: 100%;
     min-width: 0;
   }
+}
+
+.day-column {
+  min-width: 0;
+}
+planner-day {
+  width: 100%;
 }

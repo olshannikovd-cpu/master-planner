@@ -15,6 +15,8 @@ export interface CalendarCell {
   taskCount: number;
   eventCount: number;
   titles: string[];
+  workCount: number;
+  workTitles: string[];
 }
 
 // Calendar arithmetic uses local noon: adding 24h skips/repeats dates at DST,

@@ -1,0 +1,34 @@
+<div class="records">
+  @for (row of rows(); track row.order.id) {
+    <a
+      class="record"
+      [class.completed]="row.order.status === 'completed'"
+      [routerLink]="['/work-orders', row.order.id]"
+    >
+      @if (row.time) {
+        <span>{{ row.time }}</span>
+      }
+      <strong>{{ row.order.title }}</strong>
+      <span>{{
+        row.customerName ?? (T.MASTER_PLANNER_CRM.CUSTOMER_MISSING | translate)
+      }}</span>
+      @if (row.siteName) {
+        <span>{{ row.siteName }}</span>
+      }
+      @if (showDate()) {
+        <span>{{
+          row.order.scheduledDay
+            ? (row.order.scheduledDay | localeDate: 'mediumDate')
+            : (T.MASTER_PLANNER_CRM.UNSCHEDULED | translate)
+        }}</span>
+      }
+      <small>{{ statusLabels[row.order.status] | translate }}</small>
+      @if (showPrice() && row.price !== undefined) {
+        <span>{{ T.MASTER_PLANNER_CRM.WORK_PRICE | translate }}: {{ row.price }}</span>
+      }
+      @if (row.order.archivedAt !== undefined) {
+        <small>{{ T.MASTER_PLANNER_CRM.ARCHIVED | translate }}</small>
+      }
+    </a>
+  }
+</div>

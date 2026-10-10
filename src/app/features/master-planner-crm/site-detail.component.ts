@@ -16,12 +16,14 @@ import { T } from '../../t.const';
 import { DialogConfirmComponent } from '../../ui/dialog-confirm/dialog-confirm.component';
 import { MasterPlannerDataService } from '../master-planner-data/master-planner-data.service';
 import { SiteFormDialogComponent } from './site-form-dialog.component';
+import { WorkOrderFormDialogComponent } from './work-order-form-dialog.component';
+import { WorkOrderRowsComponent } from './work-order-rows.component';
 import { CRM_DIALOG_SIZE, waitForCommittedRecord } from './crm-ui.util';
 
 @Component({
   selector: 'mp-site-detail',
   standalone: true,
-  imports: [RouterLink, MatButton, TranslatePipe],
+  imports: [RouterLink, MatButton, TranslatePipe, WorkOrderRowsComponent],
   templateUrl: './site-detail.component.html',
   styleUrl: './crm-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +44,12 @@ export class SiteDetailComponent {
     this._data.getCustomer(this.site()?.customerId ?? ''),
   );
   readonly site = computed(() => this._record()());
+  private readonly _relatedOrders = computed(() =>
+    this._data.getWorkOrdersForSite(this.site()?.id ?? ''),
+  );
+  readonly orders = computed(() =>
+    this._relatedOrders()().filter((order) => order.archivedAt === undefined),
+  );
   readonly customer = computed(() => this._owner()());
   readonly T = T;
   readonly busy = signal(false);
@@ -88,5 +96,26 @@ export class SiteDetailComponent {
     } finally {
       this.busy.set(false);
     }
+  }
+
+  async addWorkOrder(): Promise<void> {
+    const site = this.site();
+    const customer = this.customer();
+    if (
+      !site ||
+      !customer ||
+      site.archivedAt !== undefined ||
+      customer.archivedAt !== undefined
+    )
+      return;
+    const id = await firstValueFrom(
+      this._dialog
+        .open(WorkOrderFormDialogComponent, {
+          ...CRM_DIALOG_SIZE,
+          data: { customerId: site.customerId, workSiteId: site.id },
+        })
+        .afterClosed(),
+    );
+    if (id) await this._router.navigate(['/work-orders', id]);
   }
 }

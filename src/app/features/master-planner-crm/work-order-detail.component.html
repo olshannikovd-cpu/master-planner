@@ -1,0 +1,129 @@
+<div class="page-wrapper">
+  <div class="component-wrapper">
+    <a
+      mat-button
+      routerLink="/work-orders"
+      >{{ T.MASTER_PLANNER_CRM.BACK_WORK_ORDERS | translate }}</a
+    >
+    @if (order(); as record) {
+      <header>
+        <h1>{{ record.title }}</h1>
+        @if (record.archivedAt !== undefined) {
+          <span>{{ T.MASTER_PLANNER_CRM.ARCHIVED | translate }}</span>
+        }
+      </header>
+      <dl>
+        <dt>{{ T.MASTER_PLANNER_CRM.STATUS | translate }}</dt>
+        <dd>{{ statusLabels[record.status] | translate }}</dd>
+        <dt>{{ T.MASTER_PLANNER_CRM.CUSTOMER | translate }}</dt>
+        <dd>
+          @if (customer(); as owner) {
+            <a [routerLink]="['/customers', owner.id]">{{ owner.name }}</a>
+          } @else {
+            {{ T.MASTER_PLANNER_CRM.CUSTOMER_MISSING | translate }}
+          }
+        </dd>
+        @if (customer(); as owner) {
+          <dt>{{ T.MASTER_PLANNER_CRM.PHONE | translate }}</dt>
+          <dd>
+            <a [href]="'tel:' + owner.phone">{{ owner.phone }}</a>
+          </dd>
+        }
+        @if (site(); as location) {
+          <dt>{{ T.MASTER_PLANNER_CRM.SITE | translate }}</dt>
+          <dd>
+            <a [routerLink]="['/sites', location.id]">{{ location.name }}</a>
+          </dd>
+        }
+        <dt>{{ T.MASTER_PLANNER_CRM.DATE | translate }}</dt>
+        <dd>
+          {{
+            record.scheduledDay
+              ? (record.scheduledDay | localeDate: 'mediumDate')
+              : (T.MASTER_PLANNER_CRM.UNSCHEDULED | translate)
+          }}
+        </dd>
+        @if (time()) {
+          <dt>{{ T.MASTER_PLANNER_CRM.TIME | translate }}</dt>
+          <dd>{{ time() }}</dd>
+        }
+        @if (record.description) {
+          <dt>{{ T.MASTER_PLANNER_CRM.DESCRIPTION | translate }}</dt>
+          <dd class="notes">{{ record.description }}</dd>
+        }
+        @if (price() !== undefined) {
+          <dt>{{ T.MASTER_PLANNER_CRM.WORK_PRICE | translate }}</dt>
+          <dd>{{ price() }}</dd>
+        }
+        @if (record.notes) {
+          <dt>{{ T.MASTER_PLANNER_CRM.NOTES | translate }}</dt>
+          <dd class="notes">{{ record.notes }}</dd>
+        }
+      </dl>
+      <div class="actions">
+        <button
+          mat-button
+          (click)="edit()"
+          [disabled]="busy()"
+        >
+          {{ T.G.EDIT | translate }}
+        </button>
+        @if (record.archivedAt === undefined) {
+          @if (record.status !== 'in_progress') {
+            <button
+              mat-button
+              (click)="changeStatus('in_progress')"
+              [disabled]="busy()"
+            >
+              {{ T.MASTER_PLANNER_CRM.START | translate }}
+            </button>
+          }
+          @if (record.status === 'planned' || record.status === 'in_progress') {
+            <button
+              mat-button
+              (click)="changeStatus('waiting')"
+              [disabled]="busy()"
+            >
+              {{ T.MASTER_PLANNER_CRM.WAITING | translate }}
+            </button>
+          }
+          @if (record.status !== 'completed' && record.status !== 'cancelled') {
+            <button
+              mat-button
+              (click)="changeStatus('completed')"
+              [disabled]="busy()"
+            >
+              {{ T.MASTER_PLANNER_CRM.COMPLETE | translate }}
+            </button>
+          }
+          @if (record.status !== 'cancelled' && record.status !== 'completed') {
+            <button
+              mat-button
+              (click)="changeStatus('cancelled')"
+              [disabled]="busy()"
+            >
+              {{ T.MASTER_PLANNER_CRM.CANCEL_WORK_ORDER | translate }}
+            </button>
+          }
+          <button
+            mat-button
+            (click)="archive()"
+            [disabled]="busy()"
+          >
+            {{ T.MASTER_PLANNER_CRM.ARCHIVE_WORK_ORDER | translate }}
+          </button>
+        }
+      </div>
+      @if (failed()) {
+        <p
+          role="alert"
+          class="save-error"
+        >
+          {{ T.MASTER_PLANNER_CRM.SAVE_ERROR | translate }}
+        </p>
+      }
+    } @else {
+      <p>{{ T.MASTER_PLANNER_CRM.WORK_ORDER_NOT_FOUND | translate }}</p>
+    }
+  </div>
+</div>

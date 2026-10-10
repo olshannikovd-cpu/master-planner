@@ -40,7 +40,9 @@ export interface WorkOrder extends ArchivableRecord {
   description?: string;
   status: WorkOrderStatus;
   scheduledDay?: string;
+  /** Integer minutes from local midnight on scheduledDay: 0..1439 (not epoch). */
   scheduledStart?: number;
+  /** Integer local minutes: 1..1440; 1440 means 24:00. Must exceed start if set. */
   scheduledEnd?: number;
   workPrice?: number;
   taskIds: string[];

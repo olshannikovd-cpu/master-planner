@@ -44,6 +44,13 @@
         </button>
         @if (record.archivedAt === undefined) {
           <button
+            mat-button
+            (click)="addWorkOrder()"
+            [disabled]="busy()"
+          >
+            {{ T.MASTER_PLANNER_CRM.ADD_WORK_ORDER | translate }}
+          </button>
+          <button
             mat-flat-button
             color="primary"
             (click)="addSite()"
@@ -96,6 +103,11 @@
           </p>
         }
       </div>
+      <h2>{{ T.MASTER_PLANNER_CRM.WORK_ORDERS | translate }}</h2>
+      <mp-work-order-rows [orders]="orders()" />
+      @if (!orders().length) {
+        <p>{{ T.MASTER_PLANNER_CRM.NO_RELATED_WORK_ORDERS | translate }}</p>
+      }
     } @else {
       <p>{{ T.MASTER_PLANNER_CRM.CUSTOMER_NOT_FOUND | translate }}</p>
     }

@@ -170,7 +170,13 @@ Fields:
 - optional `completedAt`
 - optional `archivedAt`
 
-Initial statuses:
+Work-order schedule semantics (implemented in stage 5): scheduledDay uses validated
+YYYY-MM-DD. scheduledStart and scheduledEnd are integer minutes from local midnight,
+not epoch timestamps: start 0–1439, end 1–1440 (1440 = 24:00), with end > start when
+both are present. Work price is optional, finite and nonnegative. No schema bump or
+Task model change is needed; calendar appointments are composed in CalendarViewService.
+
+Statuses:
 
 - `planned`
 - `in_progress`

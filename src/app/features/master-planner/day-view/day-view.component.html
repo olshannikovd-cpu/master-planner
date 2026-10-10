@@ -5,7 +5,20 @@
   cdkScrollable
 >
   @for (day of days(); track day.dayDate) {
-    <planner-day [day]="day" />
+    <section
+      class="day-column"
+      [attr.data-day]="day.dayDate"
+    >
+      <planner-day [day]="day" />
+      @if (ordersByDay().get(day.dayDate); as orders) {
+        <h2>{{ T.MASTER_PLANNER_CRM.WORK_ORDERS | translate }}</h2>
+        <mp-work-order-rows
+          [orders]="orders"
+          [showDate]="false"
+          [showPrice]="false"
+        />
+      }
+    </section>
   }
   @if (includesToday() && (overdue().length || overdueDeadlines().length)) {
     <planner-day-overdue

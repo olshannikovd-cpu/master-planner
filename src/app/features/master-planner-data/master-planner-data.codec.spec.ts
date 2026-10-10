@@ -13,6 +13,34 @@ import {
 import { WORK_ORDER_STATUSES } from './master-planner-data.const';
 
 describe('CRM codec', () => {
+  it('rejects out-of-range, fractional and inverted work-order times and negative prices', () => {
+    for (const patch of [
+      { scheduledStart: -1 },
+      { scheduledStart: 1440 },
+      { scheduledStart: 570.5 },
+      { scheduledEnd: 0 },
+      { scheduledEnd: 1441 },
+      { scheduledEnd: 600.5 },
+      { scheduledStart: 600, scheduledEnd: 600 },
+      { scheduledStart: 600, scheduledEnd: 599 },
+      { workPrice: -1 },
+    ]) {
+      expect(isMasterPlannerRecord({ ...orderFixture(), ...patch }))
+        .withContext(JSON.stringify(patch))
+        .toBeFalse();
+    }
+  });
+
+  it('accepts boundary minutes, optional times and a zero work price', () => {
+    for (const patch of [
+      { scheduledStart: 0, scheduledEnd: 1440 },
+      { scheduledStart: 1439, scheduledEnd: 1440 },
+      { scheduledStart: 570 },
+      { scheduledEnd: 1 },
+      { workPrice: 0 },
+    ])
+      expect(isMasterPlannerRecord({ ...orderFixture(), ...patch })).toBeTrue();
+  });
   for (const record of [
     customerFixture(),
     siteFixture(),

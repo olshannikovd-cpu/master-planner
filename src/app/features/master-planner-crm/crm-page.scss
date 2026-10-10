@@ -44,6 +44,9 @@ h1 {
 .record:hover {
   background: var(--surface-2);
 }
+.record.completed {
+  color: var(--text-color-muted);
+}
 .record:focus-visible {
   outline: 2px solid var(--c-primary);
   outline-offset: var(--s-quarter);

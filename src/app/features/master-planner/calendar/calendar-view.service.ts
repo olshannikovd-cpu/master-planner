@@ -10,6 +10,8 @@ import { PlannerService } from '../../planner/planner.service';
 import { parseDbDateStr } from '../../../util/parse-db-date-str';
 import { getWeekdaysMin } from '../../../util/get-weekdays-min';
 import { T } from '../../../t.const';
+import { MasterPlannerDataService } from '../../master-planner-data/master-planner-data.service';
+import { groupCalendarWorkOrders } from './calendar-work-orders.util';
 import {
   CalendarCell,
   CalendarMode,
@@ -30,6 +32,8 @@ export class CalendarViewService {
   private readonly _config = inject(GlobalConfigService);
   private readonly _format = inject(DateTimeFormatService);
   private readonly _planner = inject(PlannerService);
+  private readonly _workOrders = inject(MasterPlannerDataService).getWorkOrders();
+  readonly ordersByDay = computed(() => groupCalendarWorkOrders(this._workOrders()));
   private readonly _params = toSignal(this._route.paramMap, {
     initialValue: this._route.snapshot.paramMap,
   });
@@ -90,6 +94,7 @@ export class CalendarViewService {
   readonly months = computed(() => {
     const dayMap = new Map(this.days().map((day) => [day.dayDate, day]));
     const today = this.today();
+    const ordersByDay = this.ordersByDay();
     return this.grids().map((grid, index) => {
       const monthDate = this.monthDates()[index];
       return {
@@ -102,6 +107,12 @@ export class CalendarViewService {
             dayNumber: parseDbDateStr(dateStr).getDate(),
             inMonth: dateStr.slice(0, 7) === monthDate.slice(0, 7),
             isToday: dateStr === today,
+            workCount: ordersByDay.get(dateStr)?.length ?? 0,
+            workTitles:
+              ordersByDay
+                .get(dateStr)
+                ?.slice(0, 2)
+                .map((order) => order.title) ?? [],
             ...summarizePlannerDay(dayMap.get(dateStr)),
           }),
         ),

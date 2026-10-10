@@ -65,6 +65,22 @@ export const APP_ROUTES: Routes = [
   },
   // Eagerly loaded — this is the main view
   {
+    path: 'work-orders',
+    loadComponent: () =>
+      import('./features/master-planner-crm/work-orders-page.component').then(
+        (m) => m.WorkOrdersPageComponent,
+      ),
+    canActivate: [FocusOverlayOpenGuard],
+  },
+  {
+    path: 'work-orders/:id',
+    loadComponent: () =>
+      import('./features/master-planner-crm/work-order-detail.component').then(
+        (m) => m.WorkOrderDetailComponent,
+      ),
+    canActivate: [FocusOverlayOpenGuard],
+  },
+  {
     path: 'tag/:id/tasks',
     component: TagTaskPageComponent,
     data: { page: 'tag-tasks' },

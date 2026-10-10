@@ -454,6 +454,13 @@ export class MagicNavConfigService {
         icon: 'home_work',
         route: '/sites',
       },
+      {
+        type: 'route',
+        id: 'mp-work-orders',
+        label: T.MASTER_PLANNER_CRM.WORK_ORDERS,
+        icon: 'handyman',
+        route: '/work-orders',
+      },
     );
 
     if (this.isPlannerEnabled()) {

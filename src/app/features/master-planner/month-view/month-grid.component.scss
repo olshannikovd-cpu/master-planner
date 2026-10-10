@@ -63,6 +63,16 @@
   border-radius: 50%;
   background: var(--c-primary);
 }
+.work-indicator {
+  width: var(--s);
+  height: var(--s-half);
+  border: 1px solid var(--c-primary);
+  border-radius: var(--s-quarter);
+}
+.work-count {
+  color: var(--c-primary);
+  font-size: var(--font-size-xs);
+}
 
 .grid.compact {
   gap: var(--s-quarter);
