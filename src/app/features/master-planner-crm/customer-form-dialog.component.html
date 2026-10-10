@@ -1,0 +1,89 @@
+<h1 mat-dialog-title>
+  {{
+    (customer ? T.MASTER_PLANNER_CRM.EDIT_CUSTOMER : T.MASTER_PLANNER_CRM.ADD_CUSTOMER)
+      | translate
+  }}
+</h1>
+<form
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+>
+  <mat-dialog-content>
+    <div class="fields">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ T.MASTER_PLANNER_CRM.NAME | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          autocomplete="name"
+          required
+        />
+        <mat-error>{{ T.MASTER_PLANNER_CRM.REQUIRED | translate }}</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ T.MASTER_PLANNER_CRM.PHONE | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="phone"
+          type="tel"
+          autocomplete="tel"
+          required
+        />
+        <mat-error>{{ T.MASTER_PLANNER_CRM.REQUIRED | translate }}</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ T.MASTER_PLANNER_CRM.PHONE2 | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="phone2"
+          type="tel"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ T.MASTER_PLANNER_CRM.EMAIL | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="email"
+          type="email"
+          autocomplete="email"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ T.MASTER_PLANNER_CRM.NOTES | translate }}</mat-label>
+        <textarea
+          matInput
+          formControlName="notes"
+          rows="4"
+        ></textarea>
+      </mat-form-field>
+    </div>
+    @if (failed()) {
+      <p
+        role="alert"
+        class="save-error"
+      >
+        {{ T.MASTER_PLANNER_CRM.SAVE_ERROR | translate }}
+      </p>
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <div class="wrap-buttons">
+      <button
+        mat-button
+        type="button"
+        (click)="cancel()"
+        [disabled]="saving()"
+      >
+        {{ T.G.CANCEL | translate }}
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="saving()"
+      >
+        {{ (saving() ? T.MASTER_PLANNER_CRM.SAVING : T.G.SAVE) | translate }}
+      </button>
+    </div>
+  </mat-dialog-actions>
+</form>

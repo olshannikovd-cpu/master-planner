@@ -439,6 +439,23 @@ export class MagicNavConfigService {
       },
     ];
 
+    items.push(
+      {
+        type: 'route',
+        id: 'mp-customers',
+        label: T.MASTER_PLANNER_CRM.CUSTOMERS,
+        icon: 'contacts',
+        route: '/customers',
+      },
+      {
+        type: 'route',
+        id: 'mp-sites',
+        label: T.MASTER_PLANNER_CRM.SITES,
+        icon: 'home_work',
+        route: '/sites',
+      },
+    );
+
     if (this.isPlannerEnabled()) {
       items.push({
         type: 'route',

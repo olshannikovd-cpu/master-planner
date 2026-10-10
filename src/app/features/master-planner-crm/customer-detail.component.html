@@ -1,0 +1,103 @@
+<div class="page-wrapper">
+  <div class="component-wrapper">
+    <a
+      mat-button
+      routerLink="/customers"
+      >{{ T.MASTER_PLANNER_CRM.BACK_CUSTOMERS | translate }}</a
+    >
+    @if (customer(); as record) {
+      <header>
+        <h1>{{ record.name }}</h1>
+        @if (record.archivedAt !== undefined) {
+          <span>{{ T.MASTER_PLANNER_CRM.ARCHIVED | translate }}</span>
+        }
+      </header>
+      <dl>
+        <dt>{{ T.MASTER_PLANNER_CRM.PHONE | translate }}</dt>
+        <dd>
+          <a [href]="'tel:' + record.phone">{{ record.phone }}</a>
+        </dd>
+        @if (record.phone2) {
+          <dt>{{ T.MASTER_PLANNER_CRM.PHONE2 | translate }}</dt>
+          <dd>
+            <a [href]="'tel:' + record.phone2">{{ record.phone2 }}</a>
+          </dd>
+        }
+        @if (record.email) {
+          <dt>{{ T.MASTER_PLANNER_CRM.EMAIL | translate }}</dt>
+          <dd>
+            <a [href]="'mailto:' + record.email">{{ record.email }}</a>
+          </dd>
+        }
+        @if (record.notes) {
+          <dt>{{ T.MASTER_PLANNER_CRM.NOTES | translate }}</dt>
+          <dd class="notes">{{ record.notes }}</dd>
+        }
+      </dl>
+      <div class="actions">
+        <button
+          mat-button
+          (click)="edit()"
+          [disabled]="busy()"
+        >
+          {{ T.G.EDIT | translate }}
+        </button>
+        @if (record.archivedAt === undefined) {
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="addSite()"
+            [disabled]="busy()"
+          >
+            {{ T.MASTER_PLANNER_CRM.ADD_SITE | translate }}
+          </button>
+          <button
+            mat-button
+            (click)="archive()"
+            [disabled]="busy()"
+          >
+            {{ T.MASTER_PLANNER_CRM.ARCHIVE_CUSTOMER | translate }}
+          </button>
+        }
+      </div>
+      @if (failed()) {
+        <p
+          role="alert"
+          class="save-error"
+        >
+          {{ T.MASTER_PLANNER_CRM.SAVE_ERROR | translate }}
+        </p>
+      }
+      <h2>{{ T.MASTER_PLANNER_CRM.CUSTOMER_SITES | translate }}</h2>
+      <mat-checkbox
+        [checked]="showArchivedSites()"
+        (change)="showArchivedSites.set($event.checked)"
+        >{{ T.MASTER_PLANNER_CRM.SHOW_ARCHIVED | translate }}</mat-checkbox
+      >
+      <div class="records">
+        @for (site of sites(); track site.id) {
+          <a
+            class="record"
+            [routerLink]="['/sites', site.id]"
+            ><strong>{{ site.name }}</strong
+            ><span>{{ site.address }}</span>
+            @if (site.archivedAt !== undefined) {
+              <small>{{ T.MASTER_PLANNER_CRM.ARCHIVED | translate }}</small>
+            }
+          </a>
+        } @empty {
+          <p>
+            {{
+              (showArchivedSites()
+                ? T.MASTER_PLANNER_CRM.NO_ARCHIVED_SITES
+                : T.MASTER_PLANNER_CRM.NO_CUSTOMER_SITES
+              ) | translate
+            }}
+          </p>
+        }
+      </div>
+    } @else {
+      <p>{{ T.MASTER_PLANNER_CRM.CUSTOMER_NOT_FOUND | translate }}</p>
+    }
+  </div>
+</div>

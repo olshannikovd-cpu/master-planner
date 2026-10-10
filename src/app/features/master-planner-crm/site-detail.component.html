@@ -1,0 +1,67 @@
+<div class="page-wrapper">
+  <div class="component-wrapper">
+    <a
+      mat-button
+      routerLink="/sites"
+      >{{ T.MASTER_PLANNER_CRM.BACK_SITES | translate }}</a
+    >
+    @if (site(); as record) {
+      <header>
+        <h1>{{ record.name }}</h1>
+        @if (record.archivedAt !== undefined) {
+          <span>{{ T.MASTER_PLANNER_CRM.ARCHIVED | translate }}</span>
+        }
+      </header>
+      <dl>
+        <dt>{{ T.MASTER_PLANNER_CRM.ADDRESS | translate }}</dt>
+        <dd>{{ record.address }}</dd>
+        <dt>{{ T.MASTER_PLANNER_CRM.CUSTOMER | translate }}</dt>
+        <dd>
+          @if (customer(); as owner) {
+            <a [routerLink]="['/customers', owner.id]">{{ owner.name }}</a>
+          } @else {
+            {{ T.MASTER_PLANNER_CRM.CUSTOMER_MISSING | translate }}
+          }
+        </dd>
+        @if (customer(); as owner) {
+          <dt>{{ T.MASTER_PLANNER_CRM.PHONE | translate }}</dt>
+          <dd>
+            <a [href]="'tel:' + owner.phone">{{ owner.phone }}</a>
+          </dd>
+        }
+        @if (record.notes) {
+          <dt>{{ T.MASTER_PLANNER_CRM.NOTES | translate }}</dt>
+          <dd class="notes">{{ record.notes }}</dd>
+        }
+      </dl>
+      <div class="actions">
+        <button
+          mat-button
+          (click)="edit()"
+          [disabled]="busy()"
+        >
+          {{ T.G.EDIT | translate }}
+        </button>
+        @if (record.archivedAt === undefined) {
+          <button
+            mat-button
+            (click)="archive()"
+            [disabled]="busy()"
+          >
+            {{ T.MASTER_PLANNER_CRM.ARCHIVE_SITE | translate }}
+          </button>
+        }
+      </div>
+      @if (failed()) {
+        <p
+          role="alert"
+          class="save-error"
+        >
+          {{ T.MASTER_PLANNER_CRM.SAVE_ERROR | translate }}
+        </p>
+      }
+    } @else {
+      <p>{{ T.MASTER_PLANNER_CRM.SITE_NOT_FOUND | translate }}</p>
+    }
+  </div>
+</div>

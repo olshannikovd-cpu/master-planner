@@ -45,6 +45,7 @@
 - [[3.08-Sync-Integration-Comparison]]
 - [[3.09-Theming]]
 - [[3.10-Master-Planner-Calendar]]
+- [[3.11-Master-Planner-CRM]]
 
 ## [[4.00-Concepts]]
 

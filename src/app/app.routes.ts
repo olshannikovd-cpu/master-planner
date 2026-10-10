@@ -31,6 +31,38 @@ export const APP_ROUTES: Routes = [
     data: { page: 'master-planner', calendarMode },
     canActivate: [FocusOverlayOpenGuard],
   })),
+  {
+    path: 'customers',
+    loadComponent: () =>
+      import('./features/master-planner-crm/customers-page.component').then(
+        (m) => m.CustomersPageComponent,
+      ),
+    canActivate: [FocusOverlayOpenGuard],
+  },
+  {
+    path: 'customers/:id',
+    loadComponent: () =>
+      import('./features/master-planner-crm/customer-detail.component').then(
+        (m) => m.CustomerDetailComponent,
+      ),
+    canActivate: [FocusOverlayOpenGuard],
+  },
+  {
+    path: 'sites',
+    loadComponent: () =>
+      import('./features/master-planner-crm/sites-page.component').then(
+        (m) => m.SitesPageComponent,
+      ),
+    canActivate: [FocusOverlayOpenGuard],
+  },
+  {
+    path: 'sites/:id',
+    loadComponent: () =>
+      import('./features/master-planner-crm/site-detail.component').then(
+        (m) => m.SiteDetailComponent,
+      ),
+    canActivate: [FocusOverlayOpenGuard],
+  },
   // Eagerly loaded — this is the main view
   {
     path: 'tag/:id/tasks',

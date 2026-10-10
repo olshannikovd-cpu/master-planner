@@ -1,0 +1,60 @@
+<div class="page-wrapper">
+  <div class="component-wrapper">
+    <header>
+      <h1>{{ T.MASTER_PLANNER_CRM.CUSTOMERS | translate }}</h1>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="addCustomer()"
+      >
+        {{ T.MASTER_PLANNER_CRM.ADD_CUSTOMER | translate }}
+      </button>
+    </header>
+    <div class="toolbar">
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.SEARCH_CUSTOMERS | translate }}</mat-label
+        ><input
+          matInput
+          type="search"
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)"
+      /></mat-form-field>
+      <mat-checkbox
+        [checked]="showArchived()"
+        (change)="showArchived.set($event.checked)"
+        >{{ T.MASTER_PLANNER_CRM.SHOW_ARCHIVED | translate }}</mat-checkbox
+      >
+    </div>
+    <div class="records">
+      @for (row of rows(); track row.customer.id) {
+        <a
+          class="record"
+          [routerLink]="['/customers', row.customer.id]"
+        >
+          <strong>{{ row.customer.name }}</strong
+          ><span>{{ row.customer.phone }}</span>
+          @if (row.customer.email) {
+            <span>{{ row.customer.email }}</span>
+          }
+          <small>{{
+            T.MASTER_PLANNER_CRM.SITE_COUNT | translate: { count: row.siteCount }
+          }}</small>
+          @if (row.customer.archivedAt !== undefined) {
+            <small>{{ T.MASTER_PLANNER_CRM.ARCHIVED | translate }}</small>
+          }
+        </a>
+      } @empty {
+        <p>
+          {{
+            (search().trim()
+              ? T.MASTER_PLANNER_CRM.NO_MATCHES
+              : showArchived()
+                ? T.MASTER_PLANNER_CRM.NO_ARCHIVED_CUSTOMERS
+                : T.MASTER_PLANNER_CRM.NO_CUSTOMERS
+            ) | translate
+          }}
+        </p>
+      }
+    </div>
+  </div>
+</div>

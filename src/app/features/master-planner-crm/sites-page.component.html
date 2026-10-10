@@ -1,0 +1,65 @@
+<div class="page-wrapper">
+  <div class="component-wrapper">
+    <header>
+      <h1>{{ T.MASTER_PLANNER_CRM.SITES | translate }}</h1>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="addSite()"
+      >
+        {{ T.MASTER_PLANNER_CRM.ADD_SITE | translate }}
+      </button>
+    </header>
+    <div class="toolbar">
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.SEARCH_SITES | translate }}</mat-label
+        ><input
+          matInput
+          type="search"
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)"
+      /></mat-form-field>
+      <mat-checkbox
+        [checked]="showArchived()"
+        (change)="showArchived.set($event.checked)"
+        >{{ T.MASTER_PLANNER_CRM.SHOW_ARCHIVED | translate }}</mat-checkbox
+      >
+    </div>
+    <div class="records">
+      @for (row of rows(); track row.site.id) {
+        <a
+          class="record"
+          [routerLink]="['/sites', row.site.id]"
+        >
+          <strong>{{ row.site.name }}</strong
+          ><span>{{ row.site.address }}</span
+          ><span>{{
+            row.customer?.name ?? (T.MASTER_PLANNER_CRM.CUSTOMER_MISSING | translate)
+          }}</span>
+          @if (row.site.archivedAt !== undefined) {
+            <small>{{ T.MASTER_PLANNER_CRM.ARCHIVED | translate }}</small>
+          }
+        </a>
+      } @empty {
+        <p>
+          {{
+            (search().trim()
+              ? T.MASTER_PLANNER_CRM.NO_MATCHES
+              : showArchived()
+                ? T.MASTER_PLANNER_CRM.NO_ARCHIVED_SITES
+                : T.MASTER_PLANNER_CRM.NO_SITES
+            ) | translate
+          }}
+        </p>
+        @if (!hasActiveCustomers() && !showArchived()) {
+          <p>
+            {{ T.MASTER_PLANNER_CRM.NO_ACTIVE_CUSTOMERS | translate }}
+            <a routerLink="/customers">{{
+              T.MASTER_PLANNER_CRM.CUSTOMERS | translate
+            }}</a>
+          </p>
+        }
+      }
+    </div>
+  </div>
+</div>
