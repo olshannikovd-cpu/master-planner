@@ -44,6 +44,8 @@ interface WorkOrderTestData {
   getWorkSitesForCustomer: (id: string) => Signal<WorkSite[]>;
   getWorkOrdersForCustomer: jasmine.Spy;
   getWorkOrdersForSite: jasmine.Spy;
+  getPaymentsForWorkOrder: () => Signal<[]>;
+  getMaterialsForWorkOrder: () => Signal<[]>;
   createWorkOrder: jasmine.Spy;
   saveWorkOrder: jasmine.Spy;
   archiveWorkOrder: jasmine.Spy;
@@ -56,6 +58,8 @@ describe('Work orders UI', () => {
   let dialog: { open: jasmine.Spy };
   let ref: { close: jasmine.Spy; disableClose: boolean };
   const makeData = (): WorkOrderTestData => ({
+    getPaymentsForWorkOrder: () => signal<[]>([]),
+    getMaterialsForWorkOrder: () => signal<[]>([]),
     getCustomers: () => customers,
     getWorkSites: () => sites,
     getWorkOrders: () => orders,

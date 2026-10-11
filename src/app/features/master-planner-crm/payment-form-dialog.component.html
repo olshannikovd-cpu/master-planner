@@ -1,0 +1,82 @@
+<h2 mat-dialog-title>
+  {{
+    (input.payment ? T.MASTER_PLANNER_CRM.EDIT_PAYMENT : T.MASTER_PLANNER_CRM.ADD_PAYMENT)
+      | translate
+  }}
+</h2>
+<form
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+>
+  <mat-dialog-content>
+    <div class="fields">
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.AMOUNT | translate }}</mat-label
+        ><input
+          matInput
+          type="number"
+          step="any"
+          formControlName="amount"
+          required
+        />
+        <mat-error>{{ T.MASTER_PLANNER_CRM.AMOUNT_ERROR | translate }}</mat-error>
+      </mat-form-field>
+      @if (input.payment && input.payment.amount < 0) {
+        <p>{{ T.MASTER_PLANNER_CRM.REFUND_HINT | translate }}</p>
+      }
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.PAYMENT_DATE | translate }}</mat-label
+        ><input
+          matInput
+          type="date"
+          formControlName="date"
+          required
+        />
+        <mat-error>{{ T.MASTER_PLANNER_CRM.INVALID_DATE | translate }}</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.PAYMENT_METHOD | translate }}</mat-label
+        ><input
+          matInput
+          formControlName="method"
+      /></mat-form-field>
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.NOTES | translate }}</mat-label
+        ><textarea
+          matInput
+          formControlName="notes"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+    </div>
+    @if (!canEdit()) {
+      <p role="alert">{{ T.MASTER_PLANNER_CRM.FINANCE_READ_ONLY | translate }}</p>
+    }
+    @if (failed()) {
+      <p
+        class="save-error"
+        role="alert"
+      >
+        {{ T.MASTER_PLANNER_CRM.SAVE_ERROR | translate }}
+      </p>
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button
+      mat-button
+      type="button"
+      (click)="cancel()"
+      [disabled]="saving()"
+    >
+      {{ T.G.CANCEL | translate }}
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="saving() || !canEdit()"
+    >
+      {{ T.G.SAVE | translate }}
+    </button>
+  </mat-dialog-actions>
+</form>

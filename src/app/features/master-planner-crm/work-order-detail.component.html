@@ -61,13 +61,15 @@
         }
       </dl>
       <div class="actions">
-        <button
-          mat-button
-          (click)="edit()"
-          [disabled]="busy()"
-        >
-          {{ T.G.EDIT | translate }}
-        </button>
+        @if (record.archivedAt === undefined) {
+          <button
+            mat-button
+            (click)="edit()"
+            [disabled]="busy()"
+          >
+            {{ T.G.EDIT | translate }}
+          </button>
+        }
         @if (record.archivedAt === undefined) {
           @if (record.status !== 'in_progress') {
             <button
@@ -114,6 +116,7 @@
           </button>
         }
       </div>
+      <mp-work-order-finance [order]="record" />
       @if (failed()) {
         <p
           role="alert"

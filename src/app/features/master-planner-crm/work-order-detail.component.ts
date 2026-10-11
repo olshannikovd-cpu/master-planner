@@ -20,6 +20,7 @@ import { MasterPlannerDataService } from '../master-planner-data/master-planner-
 import { WorkOrderStatus } from '../master-planner-data/master-planner-data.model';
 import { WorkOrderFormDialogComponent } from './work-order-form-dialog.component';
 import { CRM_DIALOG_SIZE, waitForCommittedRecord } from './crm-ui.util';
+import { WorkOrderFinanceComponent } from './work-order-finance.component';
 import {
   withWorkOrderStatus,
   workOrderTimeLabel,
@@ -29,7 +30,13 @@ import {
 @Component({
   selector: 'mp-work-order-detail',
   standalone: true,
-  imports: [RouterLink, MatButton, TranslatePipe, LocaleDatePipe],
+  imports: [
+    RouterLink,
+    MatButton,
+    TranslatePipe,
+    LocaleDatePipe,
+    WorkOrderFinanceComponent,
+  ],
   templateUrl: './work-order-detail.component.html',
   styleUrl: './crm-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,7 +78,7 @@ export class WorkOrderDetailComponent {
 
   async edit(): Promise<void> {
     const order = this.order();
-    if (order)
+    if (order && order.archivedAt === undefined)
       await firstValueFrom(
         this._dialog
           .open(WorkOrderFormDialogComponent, { ...CRM_DIALOG_SIZE, data: { order } })

@@ -1,0 +1,156 @@
+<section
+  class="finance-summary"
+  aria-labelledby="finance-summary-heading"
+>
+  <h2 id="finance-summary-heading">
+    {{ T.MASTER_PLANNER_CRM.FINANCIAL_SUMMARY | translate }}
+  </h2>
+  <dl>
+    <dt>{{ T.MASTER_PLANNER_CRM.WORK_PRICE | translate }}</dt>
+    <dd data-finance="work-price">
+      {{ summary().workPrice ?? (T.MASTER_PLANNER_CRM.NOT_SET | translate) }}
+    </dd>
+    <dt>{{ T.MASTER_PLANNER_CRM.PAID | translate }}</dt>
+    <dd data-finance="paid">{{ summary().paid }}</dd>
+    <dt>{{ T.MASTER_PLANNER_CRM.REMAINING | translate }}</dt>
+    <dd data-finance="remaining">
+      {{ summary().remaining ?? (T.MASTER_PLANNER_CRM.NOT_SET | translate) }}
+    </dd>
+    @if (summary().overpaid !== undefined) {
+      <dt>{{ T.MASTER_PLANNER_CRM.OVERPAID | translate }}</dt>
+      <dd data-finance="overpaid">{{ summary().overpaid }}</dd>
+    }
+    <dt>{{ T.MASTER_PLANNER_CRM.MATERIALS_TOTAL | translate }}</dt>
+    <dd data-finance="materials-total">{{ summary().materials }}</dd>
+  </dl>
+</section>
+@if (readOnly()) {
+  <p>{{ T.MASTER_PLANNER_CRM.FINANCE_READ_ONLY | translate }}</p>
+}
+@if (failed()) {
+  <p
+    class="save-error"
+    role="alert"
+  >
+    {{ T.MASTER_PLANNER_CRM.SAVE_ERROR | translate }}
+  </p>
+}
+<section
+  class="payments"
+  aria-labelledby="payments-heading"
+>
+  <header>
+    <h2 id="payments-heading">{{ T.MASTER_PLANNER_CRM.PAYMENTS | translate }}</h2>
+    @if (!readOnly()) {
+      <button
+        mat-button
+        (click)="editPayment()"
+        [disabled]="busy()"
+      >
+        {{ T.MASTER_PLANNER_CRM.ADD_PAYMENT | translate }}
+      </button>
+    }
+  </header>
+  <div class="records">
+    @for (row of paymentRows(); track row.record.id) {
+      <article
+        class="record"
+        [attr.data-payment-id]="row.record.id"
+      >
+        <span>{{ row.date }}</span>
+        <strong>{{ T.MASTER_PLANNER_CRM.AMOUNT | translate }}: {{ row.amount }}</strong>
+        @if (row.record.method) {
+          <span
+            >{{ T.MASTER_PLANNER_CRM.PAYMENT_METHOD | translate }}:
+            {{ row.record.method }}</span
+          >
+        }
+        @if (row.record.notes) {
+          <span class="notes">{{ row.record.notes }}</span>
+        }
+        @if (!readOnly()) {
+          <div class="actions">
+            <button
+              mat-button
+              (click)="editPayment(row.record)"
+              [disabled]="busy()"
+            >
+              {{ T.MASTER_PLANNER_CRM.EDIT_PAYMENT | translate }}
+            </button>
+            <button
+              mat-button
+              color="warn"
+              (click)="deletePayment(row.record)"
+              [disabled]="busy()"
+            >
+              {{ T.MASTER_PLANNER_CRM.DELETE_PAYMENT | translate }}
+            </button>
+          </div>
+        }
+      </article>
+    } @empty {
+      <p>{{ T.MASTER_PLANNER_CRM.NO_PAYMENTS | translate }}</p>
+    }
+  </div>
+</section>
+<section
+  class="materials"
+  aria-labelledby="materials-heading"
+>
+  <header>
+    <h2 id="materials-heading">{{ T.MASTER_PLANNER_CRM.MATERIALS | translate }}</h2>
+    @if (!readOnly()) {
+      <button
+        mat-button
+        (click)="editMaterial()"
+        [disabled]="busy()"
+      >
+        {{ T.MASTER_PLANNER_CRM.ADD_MATERIAL | translate }}
+      </button>
+    }
+  </header>
+  <div class="records">
+    @for (row of materialRows(); track row.record.id) {
+      <article
+        class="record"
+        [attr.data-material-id]="row.record.id"
+      >
+        <strong>{{ row.record.name }}</strong>
+        <span
+          >{{ T.MASTER_PLANNER_CRM.QUANTITY | translate }}: {{ row.quantity }}
+          @if (row.record.unit) {
+            {{ row.record.unit }}
+          }
+        </span>
+        <span
+          >{{ T.MASTER_PLANNER_CRM.UNIT_PRICE | translate }}: {{ row.unitPrice }}</span
+        >
+        <span>{{ T.MASTER_PLANNER_CRM.LINE_TOTAL | translate }}: {{ row.total }}</span>
+        @if (row.record.notes) {
+          <span class="notes">{{ row.record.notes }}</span>
+        }
+        @if (!readOnly()) {
+          <div class="actions">
+            <button
+              mat-button
+              (click)="editMaterial(row.record)"
+              [disabled]="busy()"
+            >
+              {{ T.MASTER_PLANNER_CRM.EDIT_MATERIAL | translate }}
+            </button>
+            <button
+              mat-button
+              color="warn"
+              (click)="deleteMaterial(row.record)"
+              [disabled]="busy()"
+            >
+              {{ T.MASTER_PLANNER_CRM.DELETE_MATERIAL | translate }}
+            </button>
+          </div>
+        }
+      </article>
+    } @empty {
+      <p>{{ T.MASTER_PLANNER_CRM.NO_MATERIALS | translate }}</p>
+    }
+  </div>
+</section>

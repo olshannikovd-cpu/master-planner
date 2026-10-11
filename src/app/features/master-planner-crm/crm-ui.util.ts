@@ -15,19 +15,28 @@ export const matchesCrmSearch = (
 };
 
 /** A queued persistence Promise is not a committed record. Keep the form open until it appears. */
+export const waitForCommittedValue = <T>(
+  value: Signal<T>,
+  matches: (value: T) => boolean,
+  injector: Injector,
+): Promise<T> => {
+  const current = value();
+  if (matches(current)) return Promise.resolve(current);
+  return firstValueFrom(
+    toObservable(value, { injector }).pipe(filter(matches), timeout({ first: 10000 })),
+  );
+};
+
 export const waitForCommittedRecord = <T>(
   record: Signal<T | undefined>,
   matches: (record: T) => boolean,
   injector: Injector,
 ): Promise<T> => {
-  const current = record();
-  if (current !== undefined && matches(current)) return Promise.resolve(current);
-  return firstValueFrom(
-    toObservable(record, { injector }).pipe(
-      filter((value): value is T => value !== undefined && matches(value)),
-      timeout({ first: 10000 }),
-    ),
-  );
+  return waitForCommittedValue(
+    record,
+    (value) => value !== undefined && matches(value),
+    injector,
+  ) as Promise<T>;
 };
 
 export const CRM_DIALOG_SIZE = {
