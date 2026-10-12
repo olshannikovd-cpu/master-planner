@@ -1,0 +1,83 @@
+<section aria-labelledby="work-order-tasks-heading">
+  <header>
+    <h2 id="work-order-tasks-heading">{{ T.MASTER_PLANNER_CRM.TASKS | translate }}</h2>
+    @if (!readOnly()) {
+      <div class="actions">
+        <button
+          mat-button
+          (click)="addTask()"
+          [disabled]="busy()"
+        >
+          {{ T.MASTER_PLANNER_CRM.ADD_TASK | translate }}
+        </button>
+        <button
+          mat-button
+          (click)="linkExisting()"
+          [disabled]="busy()"
+        >
+          {{ T.MASTER_PLANNER_CRM.LINK_EXISTING_TASK | translate }}
+        </button>
+      </div>
+    }
+  </header>
+  @if (error()) {
+    <p
+      role="alert"
+      class="save-error"
+    >
+      {{
+        (error() === 'created'
+          ? T.MASTER_PLANNER_CRM.TASK_CREATED_LINK_ERROR
+          : T.MASTER_PLANNER_CRM.TASK_LINK_ERROR
+        ) | translate
+      }}
+    </p>
+  }
+  <div class="records">
+    @for (row of rows(); track row.task.id) {
+      <article
+        class="record"
+        [class.completed]="row.task.isDone"
+        [attr.data-linked-task-id]="row.task.id"
+      >
+        <strong>{{ row.task.title }}</strong>
+        <small>{{
+          (row.task.isDone
+            ? T.MASTER_PLANNER_CRM.COMPLETED
+            : T.MASTER_PLANNER_CRM.ACTIVE_TASK
+          ) | translate
+        }}</small>
+        @if (row.archived) {
+          <small>{{ T.MASTER_PLANNER_CRM.ARCHIVED | translate }}</small>
+        }
+        @if (row.schedule) {
+          <span>{{ row.schedule }}</span>
+        }
+        <div class="actions">
+          <button
+            mat-button
+            (click)="open(row.task, row.archived)"
+          >
+            {{ T.MASTER_PLANNER_CRM.OPEN_TASK | translate }}
+          </button>
+          @if (!readOnly()) {
+            <button
+              mat-button
+              (click)="unlink(row.task.id)"
+              [disabled]="busy()"
+            >
+              {{ T.MASTER_PLANNER_CRM.UNLINK_TASK | translate }}
+            </button>
+          }
+        </div>
+      </article>
+    } @empty {
+      <p>{{ T.MASTER_PLANNER_CRM.NO_LINKED_TASKS | translate }}</p>
+    }
+  </div>
+  @if (unavailable()) {
+    <p>
+      {{ T.MASTER_PLANNER_CRM.UNAVAILABLE_TASK | translate: { count: unavailable() } }}
+    </p>
+  }
+</section>

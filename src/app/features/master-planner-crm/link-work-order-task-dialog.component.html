@@ -1,0 +1,55 @@
+<h2 mat-dialog-title>{{ T.MASTER_PLANNER_CRM.LINK_EXISTING_TASK | translate }}</h2>
+<mat-dialog-content>
+  <div class="fields">
+    <mat-form-field appearance="outline"
+      ><mat-label>{{ T.MASTER_PLANNER_CRM.SEARCH_TASKS | translate }}</mat-label
+      ><input
+        matInput
+        type="search"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+    /></mat-form-field>
+    <mat-checkbox
+      [checked]="showCompleted()"
+      (change)="showCompleted.set($event.checked)"
+      >{{ T.MASTER_PLANNER_CRM.SHOW_COMPLETED_TASKS | translate }}</mat-checkbox
+    >
+  </div>
+  @if (!canLink()) {
+    <p>{{ T.MASTER_PLANNER_CRM.TASK_LINKS_READ_ONLY | translate }}</p>
+  }
+  <div class="records">
+    @for (task of tasks(); track task.id) {
+      <article
+        class="record"
+        [class.completed]="task.isDone"
+        [attr.data-task-choice-id]="task.id"
+      >
+        <strong>{{ task.title }}</strong
+        ><small>{{
+          (task.isDone
+            ? T.MASTER_PLANNER_CRM.COMPLETED
+            : T.MASTER_PLANNER_CRM.ACTIVE_TASK
+          ) | translate
+        }}</small>
+        <button
+          mat-button
+          (click)="select(task.id)"
+          [disabled]="!canLink()"
+        >
+          {{ T.MASTER_PLANNER_CRM.LINK_TASK | translate }}
+        </button>
+      </article>
+    } @empty {
+      <p>{{ T.MASTER_PLANNER_CRM.NO_AVAILABLE_TASKS | translate }}</p>
+    }
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end"
+  ><button
+    mat-button
+    (click)="cancel()"
+  >
+    {{ T.G.CANCEL | translate }}
+  </button></mat-dialog-actions
+>

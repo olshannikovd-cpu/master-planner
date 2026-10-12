@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>{{ T.MASTER_PLANNER_CRM.ADD_TASK | translate }}</h2>
+<form
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+>
+  <mat-dialog-content>
+    <div class="fields">
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ T.MASTER_PLANNER_CRM.TASK_TITLE | translate }}</mat-label
+        ><input
+          matInput
+          formControlName="title"
+          required
+        /><mat-error>{{
+          T.MASTER_PLANNER_CRM.REQUIRED | translate
+        }}</mat-error></mat-form-field
+      >
+    </div>
+    @if (failed()) {
+      <p
+        class="save-error"
+        role="alert"
+      >
+        {{ T.MASTER_PLANNER_CRM.CREATE_TASK_ERROR | translate }}
+      </p>
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button
+      mat-button
+      type="button"
+      (click)="cancel()"
+      [disabled]="saving()"
+    >
+      {{ T.G.CANCEL | translate }}
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="saving() || !order() || order()?.archivedAt !== undefined"
+    >
+      {{ T.MASTER_PLANNER_CRM.ADD_TASK | translate }}
+    </button>
+  </mat-dialog-actions>
+</form>

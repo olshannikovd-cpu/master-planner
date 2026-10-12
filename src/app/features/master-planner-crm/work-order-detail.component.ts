@@ -21,6 +21,7 @@ import { WorkOrderStatus } from '../master-planner-data/master-planner-data.mode
 import { WorkOrderFormDialogComponent } from './work-order-form-dialog.component';
 import { CRM_DIALOG_SIZE, waitForCommittedRecord } from './crm-ui.util';
 import { WorkOrderFinanceComponent } from './work-order-finance.component';
+import { WorkOrderTasksComponent } from './work-order-tasks.component';
 import {
   withWorkOrderStatus,
   workOrderTimeLabel,
@@ -36,6 +37,7 @@ import {
     TranslatePipe,
     LocaleDatePipe,
     WorkOrderFinanceComponent,
+    WorkOrderTasksComponent,
   ],
   templateUrl: './work-order-detail.component.html',
   styleUrl: './crm-page.scss',

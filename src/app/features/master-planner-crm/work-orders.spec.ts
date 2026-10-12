@@ -33,6 +33,10 @@ import {
 import { CustomerDetailComponent } from './customer-detail.component';
 import { SiteDetailComponent } from './site-detail.component';
 import { withWorkOrderStatus } from './work-order-ui.util';
+import { TaskService } from '../tasks/task.service';
+import { TaskArchiveService } from '../archive/task-archive.service';
+import { NavigateToTaskService } from '../../core-ui/navigate-to-task/navigate-to-task.service';
+import { SnackService } from '../../core/snack/snack.service';
 
 interface WorkOrderTestData {
   getCustomers: () => Signal<Customer[]>;
@@ -159,6 +163,22 @@ describe('Work orders UI', () => {
         { provide: MAT_DIALOG_DATA, useValue: input },
         { provide: MatDialogRef, useValue: ref },
         { provide: DateTimeFormatService, useValue: { currentLocale: signal('en-GB') } },
+        {
+          provide: TaskService,
+          useValue: {
+            allTasks$: of([]),
+            setSelectedId: jasmine.createSpy('setSelectedId'),
+          },
+        },
+        {
+          provide: TaskArchiveService,
+          useValue: { getByIdBatch: () => Promise.resolve(new Map()) },
+        },
+        {
+          provide: NavigateToTaskService,
+          useValue: { navigate: () => Promise.resolve() },
+        },
+        { provide: SnackService, useValue: { open: jasmine.createSpy('open') } },
       ],
     });
     const fixture = TestBed.createComponent(component);
